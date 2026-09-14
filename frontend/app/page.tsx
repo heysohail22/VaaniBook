@@ -30,7 +30,7 @@ export default function Home() {
     // Step 2: Calling customer
     setStage("calling");
 
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+    const backendUrl = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/+$/, "");
 
     try {
       const res = await fetch(`${backendUrl}/api/call`, {

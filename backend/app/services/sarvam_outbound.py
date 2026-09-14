@@ -13,7 +13,7 @@ def format_phone(phone: str) -> str:
         return f"+91{cleaned}" if len(cleaned) == 10 else f"+{cleaned}"
     return cleaned
 
-async def trigger_outbound_call(recipient_phone: str) -> dict:
+async def trigger_outbound_call(recipient_phone: str, customer_name: str | None = None) -> dict:
     if not settings.sarvam_api_key or not settings.sarvam_org_id or not settings.sarvam_workspace_id:
         raise ValueError("Sarvam AI credentials are not configured. Please set the required environment variables.")
 
@@ -21,6 +21,12 @@ async def trigger_outbound_call(recipient_phone: str) -> dict:
         raise ValueError("Recipient phone number is required.")
 
     phone = recipient_phone.strip()
+
+    user_config: dict = {
+        "user_phone_number": format_phone(phone),
+    }
+    if customer_name and customer_name.strip():
+        user_config["customerName"] = customer_name.strip()
 
     payload = {
         "app_config": {
@@ -31,9 +37,7 @@ async def trigger_outbound_call(recipient_phone: str) -> dict:
                 "agent_phone_number": format_phone(settings.sarvam_agent_phone),
             },
         },
-        "user_config": {
-            "user_phone_number": format_phone(phone),
-        },
+        "user_config": user_config,
     }
 
     headers = {
