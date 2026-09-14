@@ -20,34 +20,18 @@ export function CallButton({
   className,
   type = "submit",
 }: CallButtonProps) {
+  const isDisabled = disabled || isLoading;
+
   return (
-    <motion.button
+    <button
       type={type}
-      disabled={disabled || isLoading}
+      disabled={isDisabled}
       onClick={onClick}
-      whileHover={
-        !disabled && !isLoading
-          ? {
-              y: -2,
-              filter: "brightness(1.05)",
-              boxShadow: "0 8px 30px rgba(94, 234, 212, 0.28)",
-            }
-          : undefined
-      }
-      whileTap={
-        !disabled && !isLoading
-          ? {
-              scale: 0.98,
-              y: 0,
-            }
-          : undefined
-      }
-      transition={{ duration: 0.18, ease: "easeOut" }}
       className={cn(
-        "relative flex h-13 w-full items-center justify-center gap-2.5 rounded-xl text-base font-semibold transition-all select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5EEAD4] focus-visible:ring-offset-2 focus-visible:ring-offset-[#151518]",
-        disabled
+        "relative flex h-13 w-full items-center justify-center gap-2.5 rounded-xl text-base font-semibold transition-all duration-200 select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5EEAD4] focus-visible:ring-offset-2 focus-visible:ring-offset-[#151518]",
+        isDisabled
           ? "bg-[#1C1C20] border border-[#27272A] text-[#71717A] cursor-not-allowed opacity-75 shadow-none"
-          : "bg-[#5EEAD4] text-[#09090B] cursor-pointer shadow-[0_4px_24px_rgba(94,234,212,0.22)] hover:bg-[#2DD4BF] hover:shadow-[0_8px_32px_rgba(94,234,212,0.3)]",
+          : "bg-[#5EEAD4] text-[#09090B] cursor-pointer shadow-[0_4px_24px_rgba(94,234,212,0.22)] hover:bg-[#2DD4BF] hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(94,234,212,0.3)] active:scale-[0.98]",
         className
       )}
     >
@@ -62,6 +46,6 @@ export function CallButton({
           <span>Call with Booking Agent</span>
         </>
       )}
-    </motion.button>
+    </button>
   );
 }
