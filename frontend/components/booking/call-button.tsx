@@ -20,12 +20,20 @@ export function CallButton({
   className,
   type = "submit",
 }: CallButtonProps) {
-  const isDisabled = disabled || isLoading;
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // During SSR and initial hydration, match the initial disabled state
+  const isDisabled = mounted ? (disabled || isLoading) : true;
 
   return (
     <button
       type={type}
       disabled={isDisabled}
+      suppressHydrationWarning
       onClick={onClick}
       className={cn(
         "relative flex h-13 w-full items-center justify-center gap-2.5 rounded-xl text-base font-semibold transition-all duration-200 select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5EEAD4] focus-visible:ring-offset-2 focus-visible:ring-offset-[#151518]",
