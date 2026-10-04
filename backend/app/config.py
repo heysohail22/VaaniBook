@@ -11,4 +11,7 @@ class Settings(BaseSettings):
     sarvam_connection_id: str = ""
     sarvam_agent_phone: str = ""
 
+    # Frontend URL (for CORS) - set to your Vercel URL when deploying
+    frontend_url: str = "http://localhost:3000"
+
 settings = Settings()

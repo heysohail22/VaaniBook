@@ -22,11 +22,18 @@ async def trigger_outbound_call(recipient_phone: str, customer_name: str | None 
 
     phone = recipient_phone.strip()
 
-    user_config: dict = {
-        "user_phone_number": format_phone(phone),
+    variables: dict = {
+        "customerName": customer_name.strip() if customer_name and customer_name.strip() else "there",
+        "restaurantName": "The Grand Bistro",
+        "restaurantLocation": "Indiranagar, Bengaluru",
+        "businessHours": "12:00 PM to 11:30 PM, Monday to Sunday",
+        "tableHoldingGraceMinutes": "15",
+        "cancellationWindowHours": "2",
+        "paymentModes": "UPI, Credit/Debit Cards, Cash",
+        "preparationInstructions": "Tables are held for up to 15 minutes past reservation time.",
+        "bookingReminderChannel": "SMS and WhatsApp",
+        "diningDurationMinutes": "90",
     }
-    if customer_name and customer_name.strip():
-        user_config["customerName"] = customer_name.strip()
 
     payload = {
         "app_config": {
@@ -36,8 +43,16 @@ async def trigger_outbound_call(recipient_phone: str, customer_name: str | None 
                 "connection_id": settings.sarvam_connection_id,
                 "agent_phone_number": format_phone(settings.sarvam_agent_phone),
             },
+            "variables": variables,
+            "agent_variables": variables,
         },
-        "user_config": user_config,
+        "user_config": {
+            "user_phone_number": format_phone(phone),
+            "variables": variables,
+            "agent_variables": variables,
+        },
+        "variables": variables,
+        "agent_variables": variables,
     }
 
     headers = {
@@ -46,7 +61,12 @@ async def trigger_outbound_call(recipient_phone: str, customer_name: str | None 
     }
 
     url = get_outbound_url()
+    print(f"\n[SARVAM OUTBOUND] Calling URL: {url}")
+    print(f"[SARVAM OUTBOUND] Payload: {payload}")
+    
     async with httpx.AsyncClient(timeout=15.0) as client:
         response = await client.post(url, json=payload, headers=headers)
+        print(f"[SARVAM OUTBOUND] Response Code: {response.status_code}")
+        print(f"[SARVAM OUTBOUND] Response Body: {response.text}\n")
         response.raise_for_status()
         return response.json()
