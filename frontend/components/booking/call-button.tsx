@@ -1,8 +1,7 @@
 "use client";
 
-import React from "react";
+import { useSyncExternalStore } from "react";
 import { PhoneCall, Loader2 } from "lucide-react";
-import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 
 interface CallButtonProps {
@@ -13,6 +12,8 @@ interface CallButtonProps {
   type?: "button" | "submit";
 }
 
+const emptySubscribe = () => () => { };
+
 export function CallButton({
   isLoading = false,
   disabled = false,
@@ -20,11 +21,11 @@ export function CallButton({
   className,
   type = "submit",
 }: CallButtonProps) {
-  const [mounted, setMounted] = React.useState(false);
-
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false
+  );
 
   // During SSR and initial hydration, match the initial disabled state
   const isDisabled = mounted ? (disabled || isLoading) : true;
